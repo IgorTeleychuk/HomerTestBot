@@ -46,6 +46,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration> <!-- указание Maven собираться в ИСПОЛНЯЕМЫЙ Jar файл, без этой настройки собранный файл не будет запускаться -->
+					<executable>true</executable>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
