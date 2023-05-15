@@ -1,0 +1,35 @@
+<configuration> <!-- Разобраться в настройках этого файла -->
+
+    <property name="HOME_LOG" value="/var/log/takio.com/tg-homer-bot/app.log"/> <!-- Задаем переменную и адрес где на сервере будут храниться логи традиционно /var/log - Linux -->
+
+    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender"> <!-- Определяем то, как пишутся логи -->
+        <file>${HOME_LOG}</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> <!-- Важная конфигурация, определяет ротирование логов, макс. размер и прочее -->
+            <fileNamePattern>/var/log/proj3ct.io/tg-simple-bot/app.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>1GB</totalSizeCap> <!-- Если больше старое удаляется -->
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory> <!-- По истечении 60 дней файлы удаляются -->
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.proj3ct.SpringDemoBot" level="debug" additivity="false">
+        <appender-ref ref="FILE-ROLLING"/>
+    </logger>
+
+    <root level="error">
+        <appender-ref ref="FILE-ROLLING"/>
+    </root>
+
+    <root level="info">
+        <appender-ref ref="FILE-ROLLING"/>
+    </root>
+
+</configuration>
