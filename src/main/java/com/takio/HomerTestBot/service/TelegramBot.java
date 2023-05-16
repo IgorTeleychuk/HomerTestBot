@@ -42,7 +42,6 @@ public class TelegramBot extends TelegramLongPollingBot  { // наследуем
                     sendMessage(chatId, "Sorry, command was not recognized");
             }
         }
-
     }
 
     private void startCommandReceived(long chatId, String name) { // метод ответа на команду start
@@ -59,8 +58,7 @@ public class TelegramBot extends TelegramLongPollingBot  { // наследуем
 
         try {
             execute(message);
-        }
-        catch (TelegramApiException e) {
+        } catch (TelegramApiException e) {
             log.error("Error occurred: " + e.getMessage());
         }
     }
