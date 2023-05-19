@@ -17,6 +17,8 @@
 		<java.version>11</java.version>
 		<telegram.version>5.6.0</telegram.version>
 		<projectlombok.version>1.18.26</projectlombok.version>
+		<postgres.version>42.5.0</postgres.version>
+		<emoji-java.version>5.1.1</emoji-java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -24,11 +26,13 @@
 			<artifactId>lombok</artifactId>
 			<version>${projectlombok.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots</artifactId>
 			<version>${telegram.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -38,6 +42,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId> <!-- спринговая обертка hibernate упрощенка -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgres.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vdurmont</groupId> <!-- мод поддержки смайликов -->
+			<artifactId>emoji-java</artifactId>
+			<version>${emoji-java.version}</version>
 		</dependency>
 	</dependencies>
 

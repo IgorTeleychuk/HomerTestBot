@@ -1,16 +1,22 @@
 package com.takio.HomerTestBot.service;
 
 import com.takio.HomerTestBot.config.BotConfig;
+import com.takio.HomerTestBot.model.User;
+import com.takio.HomerTestBot.model.UserRepository;
+import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +24,8 @@ import java.util.List;
 @Slf4j
 public class TelegramBot extends TelegramLongPollingBot  { // наследуем из библиотеки телеграм
     final BotConfig config;
+    @Autowired
+    private UserRepository userRepository;
     static final String HELP_TEXT = "This bot is created to demonstrate Spring capabilities.\n\n" +
             "You can execute commands from the main menu on the left or by typing a command:\n\n" +
             "Type /start to see a welcome message\n\n" +
@@ -57,6 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot  { // наследуем
 
             switch (messageText) {
                 case "/start":
+                    registerUser(update.getMessage()); // передаем данные в метод регистрации нового пользователя
                     startCommandReceived(chatId, update.getMessage().getChat().getFirstName()); // передаем Id чата и имя пользователя
                     break; // не забываем об этом
                 case "/help":
@@ -69,8 +78,29 @@ public class TelegramBot extends TelegramLongPollingBot  { // наследуем
         }
     }
 
+    private void registerUser(Message msg) {
+        if(userRepository.findById(msg.getChatId()).isEmpty()) { // проверяем существует ли
+            var chatId = msg.getChatId(); // достаем данные
+            var chat = msg.getChat();
+
+            User user = new User(); // создаем нового пользователя
+
+            user.setChatId(chatId); // присваиваем значения
+            user.setFirstName(chat.getFirstName());
+            user.setLastName(chat.getLastName());
+            user.setUserName(chat.getUserName());
+            user.setRegisteredAt(new Timestamp(System.currentTimeMillis())); // точка времени создания нового пользователя
+
+            userRepository.save(user);
+            log.info("User saved: " + user);
+
+        }
+    }
+
     private void startCommandReceived(long chatId, String name) { // метод ответа на команду start
-        String answer = "Hi, " + name + ", nice to meet you!";
+        String answer = EmojiParser.parseToUnicode("Hi, " + name + ", nice to meet you!" + " :blush:"); // строка с библиотекой смайликов
+        // смайлик можно задать shortcode с emojipedia.org
+        //String answer = "Hi, " + name + ", nice to meet you!";
         log.info("Replied to user: " + name);
         sendMessage(chatId, answer);
 
